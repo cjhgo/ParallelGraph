@@ -14,7 +14,7 @@ namespace parallelgraph{
 		std::vector<valuetype> values;
 		std::vector<sizetype> value_ptrs;
 
-	}
+	};
 
 
 }
