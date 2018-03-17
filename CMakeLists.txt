@@ -13,7 +13,7 @@ include_directories(
 
 ExternalProject_Add(eigen
   PREFIX ${ParallelGraph_SOURCE_DIR}/deps/eigen
-  URL http://10.20.0.188/targz/eigen_3.1.2.tar.bz2
+  URL http://www.cjhang.com/targz/eigen_3.1.2.tar.bz2
   URL_MD5 e9c081360dde5e7dcb8eba3c8430fde2
   CONFIGURE_COMMAND ""
   BUILD_COMMAND ""
