@@ -6,10 +6,8 @@
 #include<mutex>
 #include <queue>
 #include <string>
-#include "graph/graph_basic_types.hpp"
-#include "util/csr_storage.hpp"
-#include "util/counting_sort.hpp"
-#include "graph/graph.hpp"
+
+#include <graph/graph.hpp>
 
 #include <fstream>
 #include <pthread.h>

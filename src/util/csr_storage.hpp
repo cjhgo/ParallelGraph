@@ -1,3 +1,5 @@
+#include<vector>
+
 namespace parallelgraph{
 	template<typename valuetype, typename sizetype=size_t>
 	class csr_storage

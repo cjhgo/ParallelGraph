@@ -22,9 +22,9 @@ void counting_sort(const std::vector<valuetype>& value_vec,
 
 	for(size_t i = 1; i < counter.size(); i++)
 	{
-		std::cout<<counter[i]<<std::endl;
+		// std::cout<<counter[i]<<std::endl;
 		counter[i] += counter[i-1];
-		std::cout<<counter[i]<<std::endl<<std::endl;
+		// std::cout<<counter[i]<<std::endl<<std::endl;
 	}
 	permute_index.resize(value_vec.size());
 
@@ -34,7 +34,7 @@ void counting_sort(const std::vector<valuetype>& value_vec,
 		(*prefix_array)[0]=0;
 		for(size_t i = 0; i < counter.size(); i++)
 		{
-			std::cout<<counter[i];
+			// std::cout<<counter[i];
 			(*prefix_array)[i+1] = counter[i];
 			//prefix_array[i] = counter[i];
 		}

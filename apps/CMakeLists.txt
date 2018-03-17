@@ -1,0 +1,3 @@
+project(ParallelGraph)
+
+subdirs(lbp)

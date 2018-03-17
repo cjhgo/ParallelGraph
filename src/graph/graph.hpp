@@ -1,3 +1,11 @@
+ #include <fstream>
+#include <map>
+#include <mutex>
+#include <queue>
+#include <util/csr_storage.hpp>
+#include <graph/graph_basic_types.hpp>
+
+#include <util/counting_sort.hpp>
 namespace parallelgraph{
 
 
@@ -16,6 +24,7 @@ public:
 		target_arr.push_back(target);
 		data.push_back(_data);
 	}
+
 };
 
 
@@ -26,6 +35,11 @@ public:
 	graph(){};
 	~graph(){};
 	void show_graph();
+	void load_vertex(std::string file_path, void (*laod_vertex_parser)(graph &, std::string ))
+	{
+		laod_vertex_parser(*this, file_path);
+
+	}
 	void load(std::string file_path, EdgeData data=EdgeData())
 	{
 		std::ifstream infile(file_path);
@@ -67,6 +81,25 @@ public:
 		lvid_type source_local_id = get_local_id(source);
 		lvid_type target_local_id = get_local_id(target);	
 		this->local_edge_buffer.add_edge(source, target, data);
+	}
+
+	void add_vertex(const vertext_id_type _vid, VertexData vdata)
+	{
+		
+		lvid_type vid = get_local_id(_vid);
+		if(vid >= vertices.size()) 
+		{
+		  // Enable capacity doubling if resizing beyond capacity
+		  if(vid >= vertices.capacity()) 
+		  {
+		    const size_t new_size = std::max(2 * vertices.capacity(), 
+		                                     size_t(vid));
+		    vertices.reserve(new_size);
+		  }
+		  vertices.resize(vid+1);
+		}
+		
+		this->vertices[vid]=vdata;
 	}
 
 	void init_matrix_flag();
