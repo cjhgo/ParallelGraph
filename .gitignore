@@ -9,3 +9,4 @@ debug
 cmake-build-debug
 oldparallelgraph
 deps
+bug.md

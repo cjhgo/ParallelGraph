@@ -1,0 +1,16 @@
+#!/bin/bash
+
+RELEASE_DIR=release
+DEBUG_DIR=debug
+PARALLELGRAPH_HOME=$PWD
+
+if [ ! -d $DEBUG_DIR ]; then
+    mkdir $DEBUG_DIR
+fi
+cd $DEBUG_DIR
+rm -f CMakeCache.txt
+build_cmd="cmake  \
+    -D CMAKE_BUILD_TYPE=Debug \
+    ../."
+eval $build_cmd
+cd $GRAPHLAB_HOME

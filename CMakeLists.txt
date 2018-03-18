@@ -6,6 +6,7 @@ cmake_minimum_required(VERSION 2.8)
 include(ExternalProject)
 
 
+set(CMAKE_CXX_STANDARD 11)
 
 include_directories(
   ${ParallelGraph_SOURCE_DIR}/src

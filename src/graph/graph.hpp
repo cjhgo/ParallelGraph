@@ -62,13 +62,15 @@ public:
 	}
 
 
-	bool directed = false;
+	bool directed = true;
 	// void crate_mutex();
 	int current_local_id = -1;
 // private:
 	
 	std::map<int, int> global_id2local_id;
+	std::map<int, int> local_id2gloabl_id;
 	int get_local_id(int global_id);
+	int get_global_id(int global_id);
 
 	
 	std::vector <std::vector<bool> >matrix_flag;
@@ -80,7 +82,7 @@ public:
 	{
 		lvid_type source_local_id = get_local_id(source);
 		lvid_type target_local_id = get_local_id(target);	
-		this->local_edge_buffer.add_edge(source, target, data);
+		this->local_edge_buffer.add_edge(source_local_id, target_local_id, data);
 	}
 
 	void add_vertex(const vertext_id_type _vid, VertexData vdata)
@@ -140,13 +142,21 @@ public:
 
 
 		edges.swap(local_edge_buffer.data);
+
+		for (auto const& x : global_id2local_id)
+		{
+			size_t g_id = x.first;
+			size_t l_id = x.second;
+			this->local_id2gloabl_id[l_id]=g_id;
+		}
 	}
 
 	std::vector<std::pair<lvid_type, edge_id_type>> 
 	out_edges(lvid_type v)
 	{
 		size_t begin = _csr_storage.value_ptrs[v];
-		size_t end = _csr_storage.value_ptrs[v+1];
+		size_t end_pos = v+1 == _csr_storage.value_ptrs.size()? _csr_storage.value_ptrs.size() -1: v+1;
+		size_t end = _csr_storage.value_ptrs[end_pos];
 		
 		return std::vector<std::pair<lvid_type, edge_id_type>> (
 			_csr_storage.values.begin()+begin,
@@ -157,13 +167,14 @@ public:
 	in_edges(lvid_type v)
 	{
 		size_t begin = _csc_storage.value_ptrs[v];
-		size_t end = _csc_storage.value_ptrs[v+1];
+		size_t end_pos = v+1 == _csc_storage.value_ptrs.size()? _csr_storage.value_ptrs.size() -1: v+1;
+		size_t end = _csc_storage.value_ptrs[end_pos];
 		return std::vector<std::pair<lvid_type, edge_id_type>> (
 			_csc_storage.values.begin()+begin,
 			_csc_storage.values.begin()+end
 			);
 	}
-private:
+// private:
 	std::vector<VertexData> vertices;
 	std::vector<EdgeData> edges;
 	edge_buffer<VertexData, EdgeData> local_edge_buffer;
@@ -192,6 +203,15 @@ int graph<VertexData, EdgeData>::get_local_id(int global_id)
 		auto search = global_id2local_id.find(global_id);
 		return search->second;
 	}
+
+}
+
+template <typename VertexData, typename EdgeData>
+int graph<VertexData, EdgeData>::get_global_id(int local_id)
+{
+
+	auto search = local_id2gloabl_id.find(local_id);
+	return search->second;
 
 }
 
