@@ -109,6 +109,15 @@ public:
 	void resotore_vertex(int vertex);
 	void finalize()
 	{
+		size_t max_val = 0;
+		for (auto const& x : global_id2local_id)
+		{
+			size_t g_id = x.first;
+			size_t l_id = x.second;
+			if(l_id > max_val)
+				max_val = l_id;
+			this->local_id2gloabl_id[l_id]=g_id;
+		}
 		std::vector<edge_id_type> src_permute;
 		std::vector<edge_id_type> dest_permute;
 		std::vector<edge_id_type> src_counting_prefix_sum;
@@ -119,9 +128,9 @@ public:
 		std::vector<std::pair<lvid_type, edge_id_type>> csc_values;
 
 
-		counting_sort(local_edge_buffer.source_arr, dest_permute, &src_counting_prefix_sum);
+		counting_sort(local_edge_buffer.source_arr, dest_permute, &src_counting_prefix_sum, max_val);
 
-		counting_sort(local_edge_buffer.target_arr, src_permute, &dest_counting_prefix_sum);
+		counting_sort(local_edge_buffer.target_arr, src_permute, &dest_counting_prefix_sum, max_val);
 		for(size_t i = 0; i < dest_permute.size(); i++)
 		{
 			auto pos = dest_permute[i];
@@ -143,20 +152,14 @@ public:
 
 		edges.swap(local_edge_buffer.data);
 
-		for (auto const& x : global_id2local_id)
-		{
-			size_t g_id = x.first;
-			size_t l_id = x.second;
-			this->local_id2gloabl_id[l_id]=g_id;
-		}
+
 	}
 
 	std::vector<std::pair<lvid_type, edge_id_type>> 
 	out_edges(lvid_type v)
 	{
 		size_t begin = _csr_storage.value_ptrs[v];
-		size_t end_pos = v+1 == _csr_storage.value_ptrs.size()? _csr_storage.value_ptrs.size() -1: v+1;
-		size_t end = _csr_storage.value_ptrs[end_pos];
+		size_t end = _csr_storage.value_ptrs[v+1];
 		
 		return std::vector<std::pair<lvid_type, edge_id_type>> (
 			_csr_storage.values.begin()+begin,
@@ -167,8 +170,7 @@ public:
 	in_edges(lvid_type v)
 	{
 		size_t begin = _csc_storage.value_ptrs[v];
-		size_t end_pos = v+1 == _csc_storage.value_ptrs.size()? _csr_storage.value_ptrs.size() -1: v+1;
-		size_t end = _csc_storage.value_ptrs[end_pos];
+		size_t end = _csc_storage.value_ptrs[v+1];
 		return std::vector<std::pair<lvid_type, edge_id_type>> (
 			_csc_storage.values.begin()+begin,
 			_csc_storage.values.begin()+end

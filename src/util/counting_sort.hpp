@@ -6,13 +6,13 @@
 template<typename valuetype, typename sizetype>
 void counting_sort(const std::vector<valuetype>& value_vec,
 				   std::vector<sizetype>& permute_index,
-				   std::vector<sizetype>* prefix_array=NULL)
+				   std::vector<sizetype>* prefix_array=NULL, size_t max_val=0)
 {
 
 	if(value_vec.size() == 0) return;
-	valuetype maxval = *std::max_element(value_vec.begin(), value_vec.end());
+	//valuetype maxval = *std::max_element(value_vec.begin(), value_vec.end());
 
-	std::vector< std::atomic<sizetype> > counter(maxval+1);
+	std::vector< std::atomic<sizetype> > counter(max_val+1);
 
 	for(size_t i = 0; i < value_vec.size(); i++)
 	{

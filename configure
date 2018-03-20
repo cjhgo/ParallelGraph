@@ -13,4 +13,3 @@ build_cmd="cmake  \
     -D CMAKE_BUILD_TYPE=Debug \
     ../."
 eval $build_cmd
-cd $GRAPHLAB_HOME
