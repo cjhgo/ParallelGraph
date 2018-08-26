@@ -5,7 +5,7 @@
 #include<ctime>
 #include<pthread.h>
 #define NUM_THREADS 5
-#define NUM_TASKS 64*10000
+#define NUM_TASKS 64*1000
 /**
  * the semantics of sync engine
  * activestep
@@ -52,12 +52,13 @@ public:
       while(1)
       {
         size_t vid_block_start = shared_vid_counter.fetch_add(8 * sizeof(size_t));                  
-        if (vid_block_start >= NUM_TASKS) break;
+        if (vid_block_start >= NUM_TASKS) 
+        break;
         size_t vid_block = active.containing_word(vid_block_start);
         parallelgraph::fixed_dense_bitset<64> local_bitset;
         local_bitset.initialize_from_mem(&vid_block, 8);
         for(auto e: local_bitset)
-        std::cout<<vid_block_start+e<<std::endl;     
+        std::cout<<"##:"<<vid_block_start+e<<std::endl;     
       }      
     };
     template<typename MemberFun>
@@ -76,14 +77,15 @@ public:
             exit(-1);
           }
       }
-    };
-    void run()
-    {
-      execute_fun(&Engine::task);
       for(int j = 0; j < NUM_THREADS; j++ )
       {
         pthread_join(threads[j], NULL);
       }
+    };
+    void run()
+    {
+      execute_fun(&Engine::task);
+
       std::cout<<"in the end: "<<shared_vid_counter<<"..."<<shared_vid_counter/64<<std::endl;
     };   
 };
