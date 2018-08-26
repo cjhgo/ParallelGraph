@@ -7,8 +7,21 @@
 
 #include <util/counting_sort.hpp>
 namespace parallelgraph{
-
-
+/**
+ * the representation of graph 
+ * std::vector<VertexData> vertices;
+ * std::vector<EdgeData> edges;
+ * csr_type _csr_storage;
+ * csr_type _csc_storage;
+ * std::map<int, int> global_id2local_id;
+ * std::map<int, int> local_id2gloabl_id;
+ * load 
+ * load graph from file 
+ * add_edge
+ * add_vertex
+ * out_edges
+ * in_edges
+ */
 
 template <typename VertexData, typename EdgeData>
 class edge_buffer
@@ -58,7 +71,6 @@ public:
 			}
 
 		}
-		this->init_matrix_flag();
 	}
 
 
@@ -70,13 +82,7 @@ public:
 	std::map<int, int> global_id2local_id;
 	std::map<int, int> local_id2gloabl_id;
 	int get_local_id(int global_id);
-	int get_global_id(int global_id);
-
-	
-	std::vector <std::vector<bool> >matrix_flag;
-	std::mutex matrix_mutex;
-	std::queue<int> activate_vertexes;
-	
+	int get_global_id(int global_id);	
 	
 	void add_edge(lvid_type source, lvid_type target, EdgeData data=EdgeData())
 	{
@@ -104,9 +110,6 @@ public:
 		this->vertices[vid]=vdata;
 	}
 
-	void init_matrix_flag();
-	int get_vertex_to_run();
-	void resotore_vertex(int vertex);
 	void finalize()
 	{
 		size_t max_val = 0;
@@ -233,84 +236,4 @@ void graph<VertexData, EdgeData>::show_graph()
 		}
 		std::cout<<std::endl;
 	}
-}
-
-
-
-
-template <typename VertexData, typename EdgeData>
-void graph<VertexData, EdgeData>::init_matrix_flag()
-{
-	for (int i = 0; i <= this->current_local_id; ++i)
-	{
-		std::vector<bool> temp;
-		for (int i = 0; i <= this->current_local_id; ++i)
-		{
-			temp.push_back(false);
-		}
-		this->matrix_flag.push_back(temp);
-	}
-	// this->matrix_flag = new std::vector <std::vector<bool> >(this->current_local_id, 
-	// 								std::vector<bool>(this->current_local_id, false));
-
-	for (int i = 0; i <= this->current_local_id; ++i)
-	{
-		this->activate_vertexes.push(i);
-	}
-}
-
-template <typename VertexData, typename EdgeData>
-int graph<VertexData, EdgeData>::get_vertex_to_run()
-{
-	this->matrix_mutex.lock();
-	int count = 0;
-	while(count <= this->current_local_id and this->activate_vertexes.size() > 0)
-	{
-		int vertex = this->activate_vertexes.front();
-		this->activate_vertexes.pop();
-		bool occupy = false;
-		for(int i = 0 ; i <= this->current_local_id; i++)
-		{
-			auto& temp = this->matrix_flag;
-			occupy = occupy || (temp[i][vertex]);
-		}			
-		for(int i = 0 ; i <= this->current_local_id; i++)
-		{
-
-
-			auto& temp = this->matrix_flag;
-			occupy = occupy || (temp[vertex][i]);
-		}
-		if(not occupy)
-		{
-
-			for(int i = 0; i <= this->current_local_id; i++)
-			{
-				this->matrix_flag[vertex][i]=true;
-			}
-			for(int i = 0 ; i <= this->current_local_id; i++)
-				this->matrix_flag[i][vertex] = true;
-			this->matrix_mutex.unlock();
-			return vertex;
-		}
-		else
-			this->activate_vertexes.push(vertex);
-				
-		count++;
-	}
-	this->matrix_mutex.unlock();
-	return -1;		
-
-}
-
-template <typename VertexData, typename EdgeData>
-void graph<VertexData, EdgeData>::resotore_vertex(int vertex)
-{
-	this->matrix_mutex.lock();
-	for(int i = 0; i <= this->current_local_id; i++)
-		this->matrix_flag[vertex][i]=false;
-	for(int i = 0 ; i <= this->current_local_id; i++)
-		this->matrix_flag[i][vertex] = false;
-	this->matrix_mutex.unlock();
-}
 }
