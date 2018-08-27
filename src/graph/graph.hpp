@@ -1,11 +1,35 @@
- #include <fstream>
+#ifndef PARALLELGRAPH_GRAPH_HPP
+#define PARALLELGRAPH_GRAPH_HPP
+#include<iostream>
+#include <fstream>
 #include <map>
 #include <mutex>
 #include <queue>
 #include <util/csr_storage.hpp>
 #include <graph/graph_basic_types.hpp>
+#include <cmath>
+#include <string>
+#include <list>
+#include <vector>
+#include <set>
+#include <map>
 
+#include <queue>
+#include <algorithm>
+#include <functional>
+#include <fstream>
+
+#include <boost/bind.hpp>
+#include <boost/unordered_set.hpp>
+#include <boost/type_traits.hpp>
+#include <boost/typeof/typeof.hpp>
+#include <boost/iterator/transform_iterator.hpp>
+#include <boost/iterator/counting_iterator.hpp>
+#include <boost/iterator/zip_iterator.hpp>
+#include <boost/range/iterator_range.hpp>
 #include <util/counting_sort.hpp>
+
+
 namespace parallelgraph{
 /**
  * the representation of graph 
@@ -22,6 +46,7 @@ namespace parallelgraph{
  * out_edges
  * in_edges
  */
+
 
 template <typename VertexData, typename EdgeData>
 class edge_buffer
@@ -75,7 +100,6 @@ public:
 
 
 	bool directed = true;
-	// void crate_mutex();
 	int current_local_id = -1;
 // private:
 	
@@ -197,6 +221,7 @@ public:
 template <typename VertexData, typename EdgeData>
 int graph<VertexData, EdgeData>::get_local_id(int global_id)
 {
+	
 	if(global_id2local_id.find(global_id) == global_id2local_id.end())
 	{
 		this->current_local_id++;
@@ -223,17 +248,38 @@ int graph<VertexData, EdgeData>::get_global_id(int local_id)
 template <typename VertexData, typename EdgeData>
 void graph<VertexData, EdgeData>::show_graph()
 {
+	for(size_t i = 0; i < _csr_storage.values.size();i++)
+	{
+		size_t source_id = get_global_id(_csr_storage.values[i].first);
+		size_t index = _csr_storage.values[i].second;
+		std::cout<<source_id<<"\t"<<index<<std::endl;
+	}
+	std::cout<<std::endl;
+	for(size_t i = 0; i < _csc_storage.values.size();i++)
+	{
+		size_t target_id = get_global_id(_csc_storage.values[i].first);
+		size_t index = _csc_storage.values[i].second;
+		std::cout<<target_id<<"\t"<<index<<std::endl;
+	}
 	for(auto x: this->global_id2local_id)
 	{
 		std::cout<<x.first<<"###"<<x.second<<std::endl;
-	}
-	std::cout<<this->matrix.size()<<std::endl;
-	for(auto row : this->matrix)
-	{
-		for(auto ele : row)
+		size_t global_id = x.first;
+		size_t local_id = x.second;
+		std::cout<<"out edges \n";
+		for(auto e: this->out_edges(local_id))
 		{
-			std::cout<<ele<<"---";
+			size_t target_id = get_global_id(e.first);
+			std::cout<<global_id<<"-->"<<target_id<<std::endl;
 		}
 		std::cout<<std::endl;
+		std::cout<<"in edges \n";
+		for(auto e: this->in_edges(local_id))
+		{
+			size_t source_id = get_global_id(e.first);
+			std::cout<<source_id<<"-->"<<global_id<<std::endl;
+		}
 	}
 }
+}
+#endif
