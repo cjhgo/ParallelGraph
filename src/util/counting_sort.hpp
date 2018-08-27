@@ -40,7 +40,7 @@ void counting_sort(const std::vector<valuetype>& value_vec,
 		}
 	}
 
-	for(size_t i = 0; i < value_vec.size(); i++)
+	for(int i = value_vec.size()-1; i >=0 ; i--)
 	{
 		valuetype val = value_vec[i];
 		size_t pos = --counter[val];
