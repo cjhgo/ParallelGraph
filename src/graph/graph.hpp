@@ -70,9 +70,13 @@ template <typename VertexData, typename EdgeData>
 class graph
 {
 public:
+	typedef VertexData vertex_data_type;
+	typedef EdgeData edge_data_type
 	graph(){};
 	~graph(){};
 	void show_graph();
+	class vertex_type;
+	class edge_type;
 	void load_vertex(std::string file_path, void (*laod_vertex_parser)(graph &, std::string ))
 	{
 		laod_vertex_parser(*this, file_path);
@@ -99,6 +103,78 @@ public:
 	}
 
 
+	class vertex_type
+	{
+	 private:
+	  lvid_type vid;
+	  graph& graph_ref;
+	 public:
+	  vertex_type(graph& graph_ref, lvid_type vid):graph_ref(graph_ref), vid(vid){}
+	  const vertex_data_type& data() const
+	  {
+		return graph_ref.vertex_data(vid);
+	  };
+	  vertex_data_type& data()
+	  {
+		return graph_ref.vertex_data(vid);
+	  };
+	  vertext_id_type global_id()
+	  {
+		  return graph_ref.get_global_id(vid);
+	  }
+	  size_t num_in_edges() const 
+	  {
+	  	return lgraph_ref.num_in_edges(vid);
+	  }
+	  
+	  size_t num_out_edges() const 
+	  {
+	  	return lgraph_ref.num_out_edges(vid);
+	  }
+	
+	  lvid_type id() const 
+	  {
+	  	return vid;
+	  }	
+	  edge_list_type in_edges() 
+	  {
+	  	return lgraph_ref.in_edges(vid);
+	  }
+	  edge_list_type out_edges() 
+	  {
+	  	return lgraph_ref.out_edges(vid);
+	  }		 
+
+	};
+	class edge_type
+	{
+	 private:
+	  graph& graph_ref;
+	  lvid_type source;
+	  lvid_type target;
+	  edge_id_type _eid;
+	 public:
+	  edge_type(graph& graph_ref, lvid_type _source, lvid_type _target, edge_id_type _eid) :
+	   graph_ref(graph_ref), source(_source), target(_target), _eid(_eid) { }
+	  const edge_data_type& data() const {
+        return graph_ref.edge_data(_eid);
+      }
+      /// \brief Returns a reference to the data on the edge.
+      edge_data_type& data() {
+        return graph_ref.edge_data(_eid);
+      }
+      /// \brief Returns the source vertex of the edge.
+      vertex_type source() const {
+        return vertex_type(graph_ref, _source);
+      }
+      /// \brief Returns the target vertex of the edge.
+      vertex_type target() const {
+        return vertex_type(graph_ref, _target);
+      }
+      /// \brief Returns the internal ID of this edge
+      edge_id_type id() const { return _eid; }
+
+	};
 	bool directed = true;
 	int current_local_id = -1;
 // private:
@@ -134,6 +210,16 @@ public:
 		this->vertices[vid]=vdata;
 	}
 
+	VertexData& vertex_data(lvid_type v) 
+	{
+      return vertices[v];
+    } // end of data(v)
+	EdgeData& edge_data(edge_id_type eid) {      
+      return edges[eid]; 
+    }
+    const EdgeData& edge_data(edge_id_type eid) const {
+      return edges[eid]; 
+    }
 	void finalize()
 	{
 		size_t max_val = 0;
@@ -203,6 +289,15 @@ public:
 			_csc_storage.values.begin()+end
 			);
 	}
+	size_t num_in_edges(const lvid_type v) const 
+	{      
+      return _csc_storage.value_ptrs[v+1]-_csc_storage.value_ptrs[v];
+    }    
+    size_t num_out_edges(const lvid_type v) const 
+	{
+
+      return _csr_storage.value_ptrs[v+1]-_csr_storage.value_ptrs[v];
+    }
 // private:
 	std::vector<VertexData> vertices;
 	std::vector<EdgeData> edges;
