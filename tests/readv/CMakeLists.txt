@@ -1,3 +1,5 @@
 project(readv)
 add_executable(cjh rrf.cpp)
 requires_eigen(cjh)
+requires_boost(cjh)
+add_executable(coutingsort coutingsort_usage.cpp)

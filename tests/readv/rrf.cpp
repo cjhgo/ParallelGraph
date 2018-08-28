@@ -2,7 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <Eigen/Dense>
-
+#include <boost/version.hpp>
 
 typedef Eigen::VectorXd factor_type;
 
@@ -16,7 +16,13 @@ int main(int argc, char const *argv[])
 
     b<<4,9,7;
     std::cout<<b;
-
+    std::cout << "Boost version: " 
+          << BOOST_VERSION / 100000
+          << "."
+          << BOOST_VERSION / 100 % 1000
+          << "."
+          << BOOST_VERSION % 100 
+          << std::endl;
     std::cout<<std::endl;
     std::string file_path = "/home/chen/ict/ParallelGraph/debug/apps/lbp/smallsynth_vdata.tsv";
     std::ifstream infile(file_path);

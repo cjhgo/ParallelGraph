@@ -4,6 +4,7 @@
 #include<cstdlib>
 #include<ctime>
 #include<pthread.h>
+#include<boost/functional.hpp>
 #define NUM_THREADS 5
 #define NUM_TASKS 64*1000
 /**
