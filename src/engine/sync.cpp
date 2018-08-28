@@ -182,7 +182,7 @@ public:
         for(auto e: local_bitset)
         {
           vid_type vid = vid_block_start + e;
-          vertex_program_type vprog = vertex_programs[vid];
+          vertex_program_type& vprog = vertex_programs[vid];
           vertex_type vertex = graph.vertex(vid);
           gather_type accum = gather_accum[vid];
           vprog.apply(context, vertex, accum);
