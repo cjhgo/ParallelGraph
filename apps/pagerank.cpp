@@ -4,7 +4,7 @@
 #include <parallelgraph.hpp>
 double RESET_PROB = 0.15;
 
-double TOLERANCE = 1.0E-2;
+double TOLERANCE = 0.01;
 
 size_t ITERATIONS = 0;
 
@@ -54,6 +54,8 @@ public:
 
     const double newval = (1.0 - RESET_PROB) * total + RESET_PROB;
     last_change = (newval - vertex.data());
+    // std::cout<<"the change is : "<<std::fabs(last_change)<<std::endl;
+    // std::cout<<"the total is : "<<total<<std::endl;
     vertex.data() = newval;
   }
 
@@ -62,21 +64,20 @@ public:
                               const vertex_type& vertex) const {
     // In the dynamic case we run scatter on out edges if the we need
     // to maintain the delta cache or the tolerance is above bound.
-    if( std::fabs(last_change) > TOLERANCE ) {
-      return parallelgraph::OUT_EDGES;
-    } else {
-      return parallelgraph::NO_EDGES;
-    }
+    return parallelgraph::OUT_EDGES;
   }
 
   /* The scatter function just signal adjacent pages */
   void scatter(icontext_type& context, const vertex_type& vertex,
                edge_type& edge) const 
   {
-    if(last_change > TOLERANCE || last_change < -TOLERANCE) 
+    // std::cout<<"when scatter : "<<std::fabs(last_change)<<std::endl;
+    if(std::fabs(last_change) >  TOLERANCE ) 
     {
-        context.signal(edge.target().id());
-        std::cout<<"signal happend\n";
+      size_t tid = edge.target().id();
+      // std::cout<<"will signal  "<<tid<<std::endl;
+      
+      context.signal(tid);        
     }
   }
 
