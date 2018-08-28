@@ -6,7 +6,7 @@ namespace parallelgraph
     class icontext
     {
      public:
-        void signal(vid_type vid)
+        virtual void signal(vid_type vid)
         {
 
         }
