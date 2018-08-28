@@ -1,4 +1,4 @@
-quegr#include<queue>
+#include<queue>
 #include<vector>
 #include<iostream>
 int main(int argc, char const *argv[])
