@@ -100,6 +100,8 @@ public:
 
     void run()
     {
+      size_t begin_time = std::time(nullptr);
+      std::cout<<begin_time<<std::endl;
       while(iteration_counter < max_iterations)
       {
         std::cout<<"the iteration: "<<iteration_counter<<"begin\n";
@@ -116,8 +118,9 @@ public:
         iteration_counter++;
       }
       
-
-      std::cout<<"in the end: "<<shared_vid_counter<<"..."<<shared_vid_counter/64<<std::endl;
+      size_t end_time = std::time(nullptr);
+      std::cout<<end_time<<std::endl;
+      std::cout<<"engine run for (seconds):"<< end_time - begin_time <<std::endl;
     };  
     void execute_gathers()
     {
