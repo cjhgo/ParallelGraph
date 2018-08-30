@@ -78,6 +78,7 @@ public:
 	void show_graph();
 	void show_vertex();
 	void show_edge();
+	void save();
 	class vertex_type;
 	class edge_type;
 	void load_vertex(std::string file_path, void (*laod_vertex_parser)(graph &, std::string ))
@@ -421,6 +422,22 @@ void graph<VertexData, EdgeData>::show_edge()
 		}
 	}
 	
+}
+template <typename VertexData, typename EdgeData>
+void graph<VertexData, EdgeData>::save()
+{
+	std::string fname = "vertex.data";
+	std::fstream s(fname, s.out);
+	if(!s.is_open())
+	std::cout<<"failed to open "<<fname<<std::endl;
+	for(auto x: this->global_id2local_id)
+	{
+		size_t global_id = x.first;
+		size_t local_id = x.second;
+		vertex_type vertex = this->vertex(local_id);
+		s<<x.first<<"###"<<x.second<<"###"<<vertex.data()<<std::endl;
+	}
+	std::cout<<"run to here\n";
 }
 }
 #endif
