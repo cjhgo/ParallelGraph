@@ -1,7 +1,6 @@
 #include <iostream>
 #include <graphlab/rpc/dc.hpp>
 #include <graphlab/rpc/dc_init_from_mpi.hpp>
-//using namespace graphlab;
 
 int main(int argc, char ** argv) {
   graphlab::mpi_tools::init(argc, argv);
