@@ -1,6 +1,6 @@
 #ifndef PARALLEL_CONTEXT_HPP
 #define PARALLEL_CONTEXT_HPP
-#include<graph/graph_basic_types.hpp>
+#include<graphpara/graph/graph_basic_types.hpp>
 namespace parallelgraph
 {
     class icontext

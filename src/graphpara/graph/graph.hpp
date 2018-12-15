@@ -5,8 +5,8 @@
 #include <map>
 #include <mutex>
 #include <queue>
-#include <util/csr_storage.hpp>
-#include <graph/graph_basic_types.hpp>
+#include <graphpara/util/csr_storage.hpp>
+#include <graphpara/graph/graph_basic_types.hpp>
 #include <cmath>
 #include <string>
 #include <list>
@@ -27,7 +27,7 @@
 #include <boost/iterator/counting_iterator.hpp>
 #include <boost/iterator/zip_iterator.hpp>
 #include <boost/range/iterator_range.hpp>
-#include <util/counting_sort.hpp>
+#include <graphpara/util/counting_sort.hpp>
 
 
 namespace parallelgraph{

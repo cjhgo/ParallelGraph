@@ -1,7 +1,7 @@
 #ifndef PARALLELGRAPH_IVERTEX_PROGRAM_HPP
 #define PARALLELGRAPH_IVERTEX_PROGRAM_HPP
-#include<graph/graph_basic_types.hpp>
-#include<vertex_program/context.hpp>
+#include<graphpara/graph/graph_basic_types.hpp>
+#include<graphpara/vertex_program/context.hpp>
 namespace parallelgraph 
 {
  template<typename Graph,

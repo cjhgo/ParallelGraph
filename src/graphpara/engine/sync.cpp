@@ -1,10 +1,10 @@
 #ifndef PARALLELGRAPH_SYNC_HPP
 #define PARALLELGRAPH_SYNC_HPP
 #include<iostream>
-#include<util/dense_bitset.hpp>
-#include<vertex_program/ivertex_program.hpp>
-#include<vertex_program/context.hpp>
-#include<graph/graph_basic_types.hpp>
+#include<graphpara/util/dense_bitset.hpp>
+#include<graphpara/vertex_program/ivertex_program.hpp>
+#include<graphpara/vertex_program/context.hpp>
+#include<graphpara/graph/graph_basic_types.hpp>
 #include<atomic>
 #include<cstdlib>
 #include<ctime>
