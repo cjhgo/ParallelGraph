@@ -1,0 +1,5 @@
+project(ParallelGraph)
+add_executable(rank rpcrank.cpp)
+add_executable(rpc rpcrpc.cpp)
+requires_graphlab(rank)
+requires_graphlab(rpc)
