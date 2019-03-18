@@ -1,5 +1,7 @@
 project(ParallelGraph)
 add_executable(rank rpcrank.cpp)
 add_executable(rpc rpcrpc.cpp)
+add_executable(use_exchange use_exchange.cpp)
 requires_graphlab(rank)
 requires_graphlab(rpc)
+requires_graphlab(use_exchange)
